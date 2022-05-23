@@ -36,7 +36,7 @@ export class Utils {
     }
 
     public static setFrogbotEnv() {
-        core.exportVariable('JF_GIT_PROVIDER', 'github');
+        core.exportVariable('JF_GIT_PROVIDER', 'github') ;
         core.exportVariable('JF_GIT_OWNER', github.context.repo.owner);
         let owner: string | undefined = github.context.repo.repo;
         if (owner) {
