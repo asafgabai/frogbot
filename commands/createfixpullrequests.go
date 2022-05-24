@@ -184,7 +184,7 @@ func (cfp *CreateFixPullRequestsCmd) updatePackageToFixedVersion(packageType Pac
 	case "npm":
 		packageFullName := impactedPackage + "@" + fixVersion
 		clientLog.Debug(fmt.Sprintf("Running 'npm install %s'", packageFullName))
-		output, err := exec.Command("npm", "install", packageFullName).CombinedOutput()
+		output, err := exec.Command("npm", "install", packageFullName).CombinedOutput() // #nosec G204
 		if err != nil {
 			return fmt.Errorf("npm install command failed: %s\n%s", err.Error(), output)
 		}
@@ -195,7 +195,7 @@ func (cfp *CreateFixPullRequestsCmd) updatePackageToFixedVersion(packageType Pac
 		updateVersionArgs := []string{"versions:use-dep-version", "-Dincludes=" + impactedPackage, "-DdepVersion=" + fixVersion}
 		updateVersionCmd := fmt.Sprintf("mvn %s", strings.Join(updateVersionArgs, " "))
 		clientLog.Debug(fmt.Sprintf("Running '%s'", updateVersionCmd))
-		updateVersionOutput, err := exec.Command("mvn", updateVersionArgs...).CombinedOutput()
+		updateVersionOutput, err := exec.Command("mvn", updateVersionArgs...).CombinedOutput() // #nosec G204
 		if err != nil {
 			return fmt.Errorf("mvn command failed: %s\n%s", err.Error(), updateVersionOutput)
 		}
@@ -205,7 +205,7 @@ func (cfp *CreateFixPullRequestsCmd) updatePackageToFixedVersion(packageType Pac
 			updatePropertyArgs := []string{"versions:set-property", "-Dproperty=" + property, "-DnewVersion=" + fixVersion}
 			updatePropertyCmd := fmt.Sprintf("mvn %s", strings.Join(updatePropertyArgs, " "))
 			clientLog.Debug(fmt.Sprintf("Running '%s'", updatePropertyCmd))
-			updatePropertyOutput, err := exec.Command("mvn", updatePropertyArgs...).CombinedOutput()
+			updatePropertyOutput, err := exec.Command("mvn", updatePropertyArgs...).CombinedOutput() // #nosec G204
 			if err != nil {
 				return fmt.Errorf("mvn command failed: %s\n%s", err.Error(), updatePropertyOutput)
 			}
