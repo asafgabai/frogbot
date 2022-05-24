@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/jfrog/froggit-go/vcsutils"
@@ -123,40 +124,32 @@ func TestExtractInstallationCommandFromEnv(t *testing.T) {
 	assert.Equal(t, []string{"b", "--flagName=flagValue"}, params.InstallCommandArgs)
 }
 
-//func TestExtractGitParamsFromEnvErrors(t *testing.T) {
-//	params := &FrogbotParams{}
-//	defer func() {
-//		assert.NoError(t, sanitizeEnv())
-//	}()
-//
-//	err := extractGitParamsFromEnv(params)
-//	assert.EqualError(t, err, "JF_GIT_PROVIDER should be one of: 'github' or 'gitlab'")
-//
-//	SetEnvAndAssert(t, map[string]string{GitProvider: "github"})
-//	err = extractGitParamsFromEnv(params)
-//	assert.EqualError(t, err, "'JF_GIT_OWNER' environment variable is missing")
-//
-//	SetEnvAndAssert(t, map[string]string{GitRepoOwnerEnv: "jfrog"})
-//	err = extractGitParamsFromEnv(params)
-//	assert.EqualError(t, err, "'JF_GIT_REPO' environment variable is missing")
-//
-//	SetEnvAndAssert(t, map[string]string{GitRepoEnv: "frogit"})
-//	err = extractGitParamsFromEnv(params)
-//	assert.EqualError(t, err, "'JF_GIT_TOKEN' environment variable is missing")
-//
-//	SetEnvAndAssert(t, map[string]string{GitTokenEnv: "123456"})
-//	err = extractGitParamsFromEnv(params)
-//	assert.EqualError(t, err, "'JF_GIT_BASE_BRANCH' environment variable is missing")
-//
-//	SetEnvAndAssert(t, map[string]string{GitBaseBranchEnv: "master"})
-//	err = extractGitParamsFromEnv(params)
-//	assert.EqualError(t, err, "'JF_GIT_PULL_REQUEST_ID' environment variable is missing")
-//
-//	SetEnvAndAssert(t, map[string]string{GitPullRequestIDEnv: "illegal-id"})
-//	err = extractGitParamsFromEnv(params)
-//	_, ok := err.(*strconv.NumError)
-//	assert.True(t, ok)
-//}
+func TestExtractGitParamsFromEnvErrors(t *testing.T) {
+	params := &FrogbotParams{}
+	defer func() {
+		assert.NoError(t, sanitizeEnv())
+	}()
+
+	err := extractGitParamsFromEnv(params)
+	assert.EqualError(t, err, "JF_GIT_PROVIDER should be one of: 'github', 'gitlab' or 'bitbucket server'")
+
+	SetEnvAndAssert(t, map[string]string{GitProvider: "github"})
+	err = extractGitParamsFromEnv(params)
+	assert.EqualError(t, err, "'JF_GIT_OWNER' environment variable is missing")
+
+	SetEnvAndAssert(t, map[string]string{GitRepoOwnerEnv: "jfrog"})
+	err = extractGitParamsFromEnv(params)
+	assert.EqualError(t, err, "'JF_GIT_REPO' environment variable is missing")
+
+	SetEnvAndAssert(t, map[string]string{GitRepoEnv: "frogit"})
+	err = extractGitParamsFromEnv(params)
+	assert.EqualError(t, err, "'JF_GIT_TOKEN' environment variable is missing")
+
+	SetEnvAndAssert(t, map[string]string{GitPullRequestIDEnv: "illegal-id", GitTokenEnv: "123456"})
+	err = extractGitParamsFromEnv(params)
+	_, ok := err.(*strconv.NumError)
+	assert.True(t, ok)
+}
 
 func extractAndAssertParamsFromEnv(t *testing.T, platformUrl, basicAuth bool) {
 	params, _, err := GetParamsAndClient()

@@ -9,7 +9,7 @@ import (
 )
 
 func GetVersionProperties(projectPath string, depToPropertyMap map[string][]string) error {
-	contentBytes, err := ioutil.ReadFile(filepath.Join(projectPath, "pom.xml")) // #nosec G304
+	contentBytes, err := ioutil.ReadFile(filepath.Join(projectPath, "pom.xml"))
 	if err != nil {
 		return err
 	}
