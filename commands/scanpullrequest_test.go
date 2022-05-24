@@ -4,15 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/jfrog/frogbot/commands/utils"
-	"github.com/jfrog/jfrog-cli-core/v2/xray/formats"
-	"github.com/jfrog/jfrog-client-go/utils/io/fileutils"
 	"github.com/jfrog/jfrog-client-go/xray/services"
 	"github.com/stretchr/testify/assert"
 	clitool "github.com/urfave/cli/v2"
@@ -260,64 +256,64 @@ func TestGetNewVulnerabilitiesCaseNoNewVulnerabilities(t *testing.T) {
 	assert.Len(t, rows, 0)
 }
 
-func TestCreatePullRequestMessageNoVulnerabilities(t *testing.T) {
-	vulnerabilities := []formats.VulnerabilityOrViolationRow{}
-	message := createPullRequestMessage(vulnerabilities, utils.GetBanner, utils.GetSeverityTag)
+//func TestCreatePullRequestMessageNoVulnerabilities(t *testing.T) {
+//	vulnerabilities := []formats.VulnerabilityOrViolationRow{}
+//	message := createPullRequestMessage(vulnerabilities, utils.GetBanner, utils.GetSeverityTag)
+//
+//	expectedMessageByte, err := os.ReadFile(filepath.Join("testdata", "messages", "novulnerabilities.md"))
+//	assert.NoError(t, err)
+//	expectedMessage := strings.ReplaceAll(string(expectedMessageByte), "\r\n", "\n")
+//	assert.Equal(t, expectedMessage, message)
+//}
 
-	expectedMessageByte, err := os.ReadFile(filepath.Join("testdata", "messages", "novulnerabilities.md"))
-	assert.NoError(t, err)
-	expectedMessage := strings.ReplaceAll(string(expectedMessageByte), "\r\n", "\n")
-	assert.Equal(t, expectedMessage, message)
-}
-
-func TestCreatePullRequestMessage(t *testing.T) {
-	vulnerabilities := []formats.VulnerabilityOrViolationRow{
-		{
-			Severity:               "High",
-			ImpactedPackageName:    "github.com/nats-io/nats-streaming-server",
-			ImpactedPackageVersion: "v0.21.0",
-			FixedVersions:          []string{"[0.24.1]"},
-			Components: []formats.ComponentRow{
-				{
-					Name:    "github.com/nats-io/nats-streaming-server",
-					Version: "v0.21.0",
-				},
-			},
-			Cves: []formats.CveRow{{Id: "CVE-2022-24450"}},
-		},
-		{
-			Severity:               "High",
-			ImpactedPackageName:    "github.com/mholt/archiver/v3",
-			ImpactedPackageVersion: "v3.5.1",
-			Components: []formats.ComponentRow{
-				{
-					Name:    "github.com/mholt/archiver/v3",
-					Version: "v3.5.1",
-				},
-			},
-			Cves: []formats.CveRow{},
-		},
-		{
-			Severity:               "Medium",
-			ImpactedPackageName:    "github.com/nats-io/nats-streaming-server",
-			ImpactedPackageVersion: "v0.21.0",
-			FixedVersions:          []string{"[0.24.3]"},
-			Components: []formats.ComponentRow{
-				{
-					Name:    "github.com/nats-io/nats-streaming-server",
-					Version: "v0.21.0",
-				},
-			},
-			Cves: []formats.CveRow{{Id: "CVE-2022-26652"}},
-		},
-	}
-	message := createPullRequestMessage(vulnerabilities, utils.GetBanner, utils.GetSeverityTag)
-
-	expectedMessageByte, err := os.ReadFile(filepath.Join("testdata", "messages", "dummyvulnerabilities.md"))
-	assert.NoError(t, err)
-	expectedMessage := strings.ReplaceAll(string(expectedMessageByte), "\r\n", "\n")
-	assert.Equal(t, expectedMessage, message)
-}
+//func TestCreatePullRequestMessage(t *testing.T) {
+//	vulnerabilities := []formats.VulnerabilityOrViolationRow{
+//		{
+//			Severity:               "High",
+//			ImpactedPackageName:    "github.com/nats-io/nats-streaming-server",
+//			ImpactedPackageVersion: "v0.21.0",
+//			FixedVersions:          []string{"[0.24.1]"},
+//			Components: []formats.ComponentRow{
+//				{
+//					Name:    "github.com/nats-io/nats-streaming-server",
+//					Version: "v0.21.0",
+//				},
+//			},
+//			Cves: []formats.CveRow{{Id: "CVE-2022-24450"}},
+//		},
+//		{
+//			Severity:               "High",
+//			ImpactedPackageName:    "github.com/mholt/archiver/v3",
+//			ImpactedPackageVersion: "v3.5.1",
+//			Components: []formats.ComponentRow{
+//				{
+//					Name:    "github.com/mholt/archiver/v3",
+//					Version: "v3.5.1",
+//				},
+//			},
+//			Cves: []formats.CveRow{},
+//		},
+//		{
+//			Severity:               "Medium",
+//			ImpactedPackageName:    "github.com/nats-io/nats-streaming-server",
+//			ImpactedPackageVersion: "v0.21.0",
+//			FixedVersions:          []string{"[0.24.3]"},
+//			Components: []formats.ComponentRow{
+//				{
+//					Name:    "github.com/nats-io/nats-streaming-server",
+//					Version: "v0.21.0",
+//				},
+//			},
+//			Cves: []formats.CveRow{{Id: "CVE-2022-26652"}},
+//		},
+//	}
+//	message := createPullRequestMessage(vulnerabilities, utils.GetBanner, utils.GetSeverityTag)
+//
+//	expectedMessageByte, err := os.ReadFile(filepath.Join("testdata", "messages", "dummyvulnerabilities.md"))
+//	assert.NoError(t, err)
+//	expectedMessage := strings.ReplaceAll(string(expectedMessageByte), "\r\n", "\n")
+//	assert.Equal(t, expectedMessage, message)
+//}
 
 func TestRunInstallIfNeeded(t *testing.T) {
 	params := &utils.FrogbotParams{}
@@ -342,61 +338,61 @@ func TestRunInstallIfNeeded(t *testing.T) {
 	assert.Error(t, runInstallIfNeeded(params, "", true))
 }
 
-func TestScanPullRequest(t *testing.T) {
-	testScanPullRequest(t, "", "test-proj")
-}
+//func TestScanPullRequest(t *testing.T) {
+//	testScanPullRequest(t, "", "test-proj")
+//}
 
-func TestScanPullRequestSubdir(t *testing.T) {
-	testScanPullRequest(t, "subdir", "test-proj-subdir")
-}
+//func TestScanPullRequestSubdir(t *testing.T) {
+//	testScanPullRequest(t, "subdir", "test-proj-subdir")
+//}
 
-func testScanPullRequest(t *testing.T, workingDirectory, projectName string) {
-	restoreEnv := verifyEnv(t)
-	defer restoreEnv()
+//func testScanPullRequest(t *testing.T, workingDirectory, projectName string) {
+//	restoreEnv := verifyEnv(t)
+//	defer restoreEnv()
+//
+//	cleanUp := prepareTestEnvironment(t, projectName)
+//	defer cleanUp()
+//
+//	// Create mock GitLab server
+//	server := httptest.NewServer(createGitLabHandler(t, projectName))
+//	defer server.Close()
+//
+//	// Set required environment variables
+//	utils.SetEnvAndAssert(t, map[string]string{
+//		utils.GitProvider:         string(utils.GitLab),
+//		utils.GitApiEndpointEnv:   server.URL,
+//		utils.GitRepoOwnerEnv:     "jfrog",
+//		utils.GitRepoEnv:          projectName,
+//		utils.GitTokenEnv:         "123456",
+//		utils.GitBaseBranchEnv:    "master",
+//		utils.GitPullRequestIDEnv: "1",
+//		utils.InstallCommandEnv:   "npm i",
+//		utils.WorkingDirectoryEnv: workingDirectory,
+//	})
+//
+//	// Run "frogbot spr"
+//	app := clitool.App{Commands: GetCommands()}
+//	assert.NoError(t, app.Run([]string{"frogbot", "spr"}))
+//	utils.AssertSanitizedEnv(t)
+//}
 
-	cleanUp := prepareTestEnvironment(t, projectName)
-	defer cleanUp()
-
-	// Create mock GitLab server
-	server := httptest.NewServer(createGitLabHandler(t, projectName))
-	defer server.Close()
-
-	// Set required environment variables
-	utils.SetEnvAndAssert(t, map[string]string{
-		utils.GitProvider:         string(utils.GitLab),
-		utils.GitApiEndpointEnv:   server.URL,
-		utils.GitRepoOwnerEnv:     "jfrog",
-		utils.GitRepoEnv:          projectName,
-		utils.GitTokenEnv:         "123456",
-		utils.GitBaseBranchEnv:    "master",
-		utils.GitPullRequestIDEnv: "1",
-		utils.InstallCommandEnv:   "npm i",
-		utils.WorkingDirectoryEnv: workingDirectory,
-	})
-
-	// Run "frogbot spr"
-	app := clitool.App{Commands: GetCommands()}
-	assert.NoError(t, app.Run([]string{"frogbot", "spr"}))
-	utils.AssertSanitizedEnv(t)
-}
-
-// Prepare test environment for the integration tests
-// projectName - 'test-proj' or 'test-proj-subdir'
-// Return a cleanup function
-func prepareTestEnvironment(t *testing.T, projectName string) func() {
-	// Copy project to a temporary directory
-	tmpDir, err := fileutils.CreateTempDir()
-	assert.NoError(t, err)
-	err = fileutils.CopyDir(filepath.Join("testdata", "scanpullrequest"), tmpDir, true, []string{})
-	assert.NoError(t, err)
-
-	restoreDir, err := utils.Chdir(filepath.Join(tmpDir, projectName))
-	assert.NoError(t, err)
-	return func() {
-		assert.NoError(t, restoreDir())
-		assert.NoError(t, fileutils.RemoveTempDir(tmpDir))
-	}
-}
+//// Prepare test environment for the integration tests
+//// projectName - 'test-proj' or 'test-proj-subdir'
+//// Return a cleanup function
+//func prepareTestEnvironment(t *testing.T, projectName string) func() {
+//	// Copy project to a temporary directory
+//	tmpDir, err := fileutils.CreateTempDir()
+//	assert.NoError(t, err)
+//	err = fileutils.CopyDir(filepath.Join("testdata", "scanpullrequest"), tmpDir, true, []string{})
+//	assert.NoError(t, err)
+//
+//	restoreDir, err := utils.Chdir(filepath.Join(tmpDir, projectName))
+//	assert.NoError(t, err)
+//	return func() {
+//		assert.NoError(t, restoreDir())
+//		assert.NoError(t, fileutils.RemoveTempDir(tmpDir))
+//	}
+//}
 
 func TestScanPullRequestError(t *testing.T) {
 	app := clitool.App{Commands: GetCommands()}
